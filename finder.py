@@ -34,13 +34,12 @@ def find():
             pool  = ''.join(choice(pool)  for _ in range(randint(int(rng1), int(rng2))))
             domain = choice(domains)
             response = httpx.get(url='http://' + pool + domain)
-            if response.text == '' or 'available' in response.text or 'for sale' in response.text or 'domain.dot.tk' in response.text or response.status_code == 0 or response.status_code == 404 or response.status_code == 503 or response.status_code == 525:
+            if response.text == '' or 'available' in response.text or 'for sale' in response.text or 'domain.dot.tk' in response.text or response.status_code == 400 or response.status_code == 0 or response.status_code == 404 or response.status_code == 503 or response.status_code == 525:
                 skipped += 1
             else:
                 done += 1
-                success = open("found.txt", "a")
-                success.write(f"http://{pool}{domain}\n")
-                success.close()
+                
+                print(response.status_code)
         except Exception as w:
             error += 1
             find()
@@ -55,7 +54,7 @@ def ip():
             d = str(randint(1,255))
             pool = "{}.{}.{}.{}".format(a,b,c,d)
             response = httpx.get(url='http://' + pool)
-            if response.text == '' or 'available' in response.text or 'for sale' in response.text or 'domain.dot.tk' in response.text or response.status_code == 0 or response.status_code == 404 or response.status_code == 503 or response.status_code == 525:
+            if response.text == '' or 'available' in response.text or 'for sale' in response.text or 'domain.dot.tk' in response.text or response.status_code == 0 or response.status_code == 403 or response.status_code == 400 or response.status_code == 404 or response.status_code == 503 or response.status_code == 525:
                 skipped += 1
             else:
                 done += 1
@@ -71,15 +70,14 @@ print(f'{BANNER} Falling Random Url Finder\n')
 print(f'{INFO} Select mode\n')
 print(f'[{BLUE2}1{WHITE}] Random between range\n[{BLUE2}2{WHITE}] Random IP\n')
 mode = input(f"{ASK} Mode: ")
-while int(mode) <= 0 or int(mode) > 2:
+while mode == '' or int(mode) <= 0 or int(mode) > 2:
     mode = input(f"{ASK} Please enter a valid mode: ")
 if mode == '1':
     print(f'\n{INFO} Define range\n')
     rng1 = input(f"{ASK} Minimum lenght: ")
     rng2 = input(f"\n{ASK} Maximum lenght: ")
-    print('')
-    while rng1 == rng2 or int(rng1) < 0 or int(rng2) < 0 or int(rng1) > int(rng2):
-        print(f"{INFO} Please, enter a valid range!\n")
+    while rng1 == '' or rng2 == '' or rng1 == rng2 or int(rng1) < 0 or int(rng2) < 0 or int(rng1) > int(rng2):
+        print(f"\n{INFO} Please, enter a valid range!\n")
         rng1 = input(f"{ASK} Minimum lenght: ")
         rng2 = input(f"\n{ASK} Maximum lenght: ")
     thrds = input(f"{ASK} Threads: ")
