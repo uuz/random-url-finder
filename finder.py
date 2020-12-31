@@ -1,5 +1,4 @@
 import httpx, string, os, platform
-from uuid import uuid4
 from time import sleep
 from threading import Thread
 from random import choice, randint
@@ -34,12 +33,13 @@ def find():
             pool  = ''.join(choice(pool)  for _ in range(randint(int(rng1), int(rng2))))
             domain = choice(domains)
             response = httpx.get(url='http://' + pool + domain)
-            if response.text == '' or 'available' in response.text or 'for sale' in response.text or 'domain.dot.tk' in response.text or response.status_code == 400 or response.status_code == 0 or response.status_code == 404 or response.status_code == 503 or response.status_code == 525:
+            if response.text == '' or 'available' in response.text or 'for sale' in response.text or 'domain.dot.tk' in response.text or response.status_code == 0 or response.status_code == 403 or response.status_code == 400 or response.status_code == 404 or response.status_code == 503 or response.status_code == 525:
                 skipped += 1
             else:
                 done += 1
-                
-                print(response.status_code)
+                success = open("found.txt", "a")
+                success.write(f"http://{pool}\n")
+                success.close()
         except Exception as w:
             error += 1
             find()
